@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: black;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        /* Background Video */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        
+        h2 {
+            text-shadow: 3px 3px 10px rgba(255, 255, 255, 0.9);
+            font-size: 3rem;
+        }
+
+        input, select {
+            font-size: 1.8rem;
+            padding: 15px;
+            margin: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(5px);
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            border: none;
+            padding: 20px 40px;
+            margin: 20px;
+            font-size: 2.5rem;
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        button:hover {
+            transform: scale(1.2) rotate(3deg);
+            box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.9);
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <video id="background-video" autoplay loop muted>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+    
+    <div id="userForm">
+        <h2>Enter Your Details</h2>
+        <input type="text" id="name" placeholder="Name" required><br>
+        <input type="number" id="age" placeholder="Age" required><br>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br>
+        <input type="text" id="semester" placeholder="Semester" required><br>
+        <button onclick="startQuiz()">Play</button>
+    </div>
+    
+    <div class="hidden" id="quizContainer">
+        <h2 id="questionText"></h2>
+        <div id="options">
+            <button onclick="answerQuestion(1)">1</button>
+            <button onclick="answerQuestion(2)">2</button>
+            <button onclick="answerQuestion(3)">3</button>
+            <button onclick="answerQuestion(4)">4</button>
+            <button onclick="answerQuestion(5)">5</button>
+        </div>
+        <button class="hidden" id="submitBtn" onclick="showResult()">Submit</button>
+    </div>
+    
+    <div class="hidden" id="resultContainer">
+        <h2>Thank you for completing the quiz!</h2>
+        <p>Your responses have been recorded.</p>
+    </div>
+    
+    <script>
+        let questions = [
+            "I learn better by reading what the teacher writes on the chalkboard.",
+            "I prefer listening to lectures over reading textbooks.",
+            "I find it easier to understand concepts with diagrams and charts.",
+            "I enjoy learning through hands-on activities.",
+            "I remember things better when I read them out loud.",
+            "I like learning through discussions and group work.",
+            "I find video explanations more helpful than written notes.",
+            "I prefer using flashcards to memorize information.",
+            "I like summarizing topics in my own words to understand them.",
+            "I grasp concepts better when they are explained with real-world examples.",
+            "I prefer using apps and software for studying.",
+            "I enjoy reading detailed explanations in textbooks.",
+            "I like making mind maps to organize my thoughts.",
+            "I find learning through storytelling effective.",
+            "I prefer practical demonstrations over theoretical explanations."
+        ];
+        
+        let currentQuestion = 0;
+        let answers = [];
+
+        function startQuiz() {
+            document.getElementById("userForm").classList.add("hidden");
+            document.getElementById("quizContainer").classList.remove("hidden");
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById("questionText").innerText = questions[currentQuestion];
+                document.getElementById("options").classList.remove("hidden");
+                document.getElementById("submitBtn").classList.add("hidden");
+            } else {
+                document.getElementById("quizContainer").classList.add("hidden");
+                document.getElementById("resultContainer").classList.remove("hidden");
+            }
+        }
+
+        function answerQuestion(answer) {
+            answers.push(answer);
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("submitBtn").classList.remove("hidden");
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quizContainer").classList.add("hidden");
+            document.getElementById("resultContainer").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
