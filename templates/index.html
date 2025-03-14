@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Video Background */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        h2 {
+            text-shadow: 3px 3px 10px rgba(255, 255, 255, 0.9);
+            font-size: 3rem;
+        }
+
+        input, select {
+            font-size: 1.8rem;
+            padding: 15px;
+            margin: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(5px);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            border: none;
+            padding: 20px 40px;
+            margin: 20px;
+            font-size: 2.5rem;
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        button:hover {
+            transform: scale(1.2) rotate(3deg);
+            box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.9);
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video id="background-video" autoplay loop muted>
+        <source src="{{ url_for('static', filename='bg.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div id="userForm">
+        <h2>Enter Your Details</h2>
+        <input type="text" id="name" placeholder="Name" required><br>
+        <input type="number" id="age" placeholder="Age" required><br>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br>
+        <input type="text" id="semester" placeholder="Semester" required><br>
+        <button onclick="startQuiz()">Play</button>
+    </div>
+    
+    <div class="hidden" id="quizContainer">
+        <h2 id="questionText"></h2>
+        <div id="options">
+            <button onclick="answerQuestion(1)">1</button>
+            <button onclick="answerQuestion(2)">2</button>
+            <button onclick="answerQuestion(3)">3</button>
+            <button onclick="answerQuestion(4)">4</button>
+            <button onclick="answerQuestion(5)">5</button>
+        </div>
+        <button class="hidden" id="submitBtn" onclick="submitQuiz()">Submit</button>
+    </div>
+    
+    <div class="hidden" id="resultContainer">
+        <h2>Thank you for completing the quiz!</h2>
+        <p>Your responses have been recorded.</p>
+    </div>
+    
+    <script>
+        let questions = [
+            "I learn better by reading what the teacher writes on the chalkboard.",
+            "When I read instructions, I remember them better.",
+            "I understand better when I read instructions.",
+            "I learn better by reading than by listening to someone.",
+            "I learn more by reading textbooks than by listening to lectures.",
+            "When the teacher tells me the instructions I understand better.",
+            "When someone tells me how to do something in class, I learn it better.",
+            "I remember things I have heard in class better than things I have read.",
+            "I learn better in class when the teacher gives a lecture.",
+            "I learn better in class when I listen to someone.",
+            "I prefer to learn by doing something in class.",
+            "When I do things in class, I learn better.",
+            "I enjoy learning in class by doing experiments.",
+            "I understand things better in class when I participate in role-playing.",
+            "I understand things better in class when I participate in role-playing."
+        ];
+        
+        let currentQuestion = 0;
+        let answers = [];
+
+        function startQuiz() {
+            document.getElementById("userForm").classList.add("hidden");
+            document.getElementById("quizContainer").classList.remove("hidden");
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById("questionText").innerText = questions[currentQuestion];
+                document.getElementById("options").classList.remove("hidden");
+                document.getElementById("submitBtn").classList.add("hidden");
+            } else {
+                document.getElementById("quizContainer").classList.add("hidden");
+                document.getElementById("resultContainer").classList.remove("hidden");
+            }
+        }
+
+        function answerQuestion(answer) {
+            answers.push(answer);
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("submitBtn").classList.remove("hidden");
+            }
+        }
+
+        function submitQuiz() {
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const gender = document.getElementById("gender").value;
+            const semester = document.getElementById("semester").value;
+
+            const data = {
+                name: name,
+                age: age,
+                gender: gender,
+                semester: semester,
+                answers: answers
+            };
+
+            // Send data to Flask backend
+            fetch("/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Redirect to result page
+                window.location.href = `/result?name=${data.name}&result=${data.result}`;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
