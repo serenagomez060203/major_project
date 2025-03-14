@@ -1,5 +1,5 @@
 # Learning Style Prediction Web Application
-This project is a **web-based application** that predicts a student's **learning style** (visual, auditory, or kinesthetic) based on their responses to a series of questions. The application is built using **Flask** (a Python web framework) and integrates a **deep feedforward neural network** for making predictions.
+This project is a **web-based application** that predicts a student's **learning style** (visual, auditory, or kinesthetic) based on their responses to a series of questions. The application is built using **Flask** (a Python web framework) and integrates a **deep feedforward neural network** (accuracy=97%) for making predictions.
 
 ## Project Overview
 ### Purpose
@@ -97,13 +97,13 @@ The goal of the project is to:
 Open your browser and go to http://127.0.0.1:5000.
 
 ## Example Use Case:
-A student visits the application and enters their details.
-They answer 15 questions about their learning preferences.
-The application predicts their learning style (e.g., "John is a Visual learner").
-The student can restart the quiz to try again.
+1. A student visits the application and enters their details.
+2. They answer 15 questions about their learning preferences.
+3. The application predicts their learning style (e.g., "John is a Visual learner").
+4. The student can restart the quiz to try again.
 
 
-With 💖,
-Team 2B
-(CSE' 2025)
+With 💖,  
+Team 2B  
+(CSE' 2025)  
 (FCRIT, Mumbai, India)
